@@ -1,35 +1,42 @@
 #include "main.h"
 
 /**
- * _atoi - converts a string to an integer.
- * @s: params
- * Return: something
+ * _atoi - Converts a string to an integer.
+ * @s: Pointer to the string.
+ *
+ * Description: Extracts numbers from the string, accounts for signs,
+ * and converts the valid digits into an integer. If no numbers are found,
+ * returns 0. Handles the case where -2147483648 would cause overflow.
+ *
+ * Return: The integer value of the converted string.
  */
 int _atoi(char *s)
 {
-	unsigned int count = 0, size = 0, j = 0, k = 1, m = 1, i;
+	unsigned int num = 0;
+	int sign = 1, i = 0;
 
-	while (*(s + count) != '\0')
+	while (s[i] != '\0')
 	{
-		if (size > 0 && (*(s + count) < '0' || *(s + count) > '9'))
+		if (s[i] == '-')
+			sign *= -1;
+
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			num = (num * 10) + (s[i] - '0');
+
+			/* Prevent integer overflow */
+			if (num > 2147483648)
+				break;
+		}
+		else if (num > 0)
 			break;
 
-		if (*(s + count) == '-')
-			k *= -1;
-
-		if ((*(s + count) >= '0') && (*(s + count) <= '9'))
-		{
-			if (size > 0)
-				m *= 10;
-			size++;
-		}
-		count++;
+		i++;
 	}
 
-	for (i = count - size; i < count; i++)
-	{
-		j = j + ((*(s + i) - 48) * m);
-		m /= 10;
-	}
-	return (j * k);
+	/* Handle case of -2147483648 correctly */
+	if (num == 2147483648 && sign == -1)
+		return (-2147483648);
+
+	return (num * sign);
 }
